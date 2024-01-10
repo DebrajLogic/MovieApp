@@ -5,18 +5,19 @@ import useFetch from "../../../hooks/useFetch";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import "./style.scss";
 
+import { Img, ContentWrapper } from "../../../components";
+
 function HeroBanner() {
-  const navigate = useNavigate();
-
-  const { url } = useSelector((state) => state.home);
-
-  const { data, loading } = useFetch("/movie/upcoming");
   const [background, setBackground] = useState("");
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+  const { data, loading } = useFetch("/movie/upcoming");
+  const { url } = useSelector((state) => state.home);
 
   useEffect(() => {
-    const bg = data?.results[Math.floor(Math.random() * 20)]?.backdrop_path;
-    console.log("BG = ", bg);
+    const bg =
+      url.backdrop +
+      data?.results?.[Math.floor(Math.random() * 20)]?.backdrop_path;
     setBackground(bg);
   }, [data]);
 
@@ -28,7 +29,13 @@ function HeroBanner() {
 
   return (
     <div className="heroBanner">
-      <div className="wrapper">
+      {!loading && (
+        <div className="backdrop-img">
+          <Img src={background} />
+        </div>
+      )}
+      <div className="opacity-layer"></div>
+      <ContentWrapper>
         <div className="heroBannerContent">
           <span className="title">Welcome</span>
           <span className="subTitle">
@@ -44,7 +51,7 @@ function HeroBanner() {
             <button>Search</button>
           </div>
         </div>
-      </div>
+      </ContentWrapper>
     </div>
   );
 }
